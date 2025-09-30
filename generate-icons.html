@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>生成图标</title>
+</head>
+<body>
+    <canvas id="canvas192" width="192" height="192"></canvas>
+    <canvas id="canvas512" width="512" height="512"></canvas>
+    <script>
+        // 生成192x192图标
+        const canvas192 = document.getElementById('canvas192');
+        const ctx192 = canvas192.getContext('2d');
+        ctx192.fillStyle = '#60a5fa';
+        ctx192.beginPath();
+        ctx192.roundRect(0, 0, 192, 192, 38);
+        ctx192.fill();
+        ctx192.font = 'bold 100px Arial';
+        ctx192.textAlign = 'center';
+        ctx192.textBaseline = 'middle';
+        ctx192.fillText('📦', 96, 110);
+
+        // 生成512x512图标
+        const canvas512 = document.getElementById('canvas512');
+        const ctx512 = canvas512.getContext('2d');
+        ctx512.fillStyle = '#60a5fa';
+        ctx512.beginPath();
+        ctx512.roundRect(0, 0, 512, 512, 102);
+        ctx512.fill();
+        ctx512.font = 'bold 280px Arial';
+        ctx512.textAlign = 'center';
+        ctx512.textBaseline = 'middle';
+        ctx512.fillText('📦', 256, 290);
+
+        // 下载图标
+        setTimeout(() => {
+            canvas192.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'icon-192.png';
+                a.click();
+            });
+
+            canvas512.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'icon-512.png';
+                a.click();
+            });
+        }, 100);
+    </script>
+</body>
+</html>

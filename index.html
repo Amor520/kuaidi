@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="快递管理">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#60a5fa">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>快递取件码记录</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 主内容区 -->
+    <div id="app">
+        <!-- 首页 -->
+        <div id="home-page" class="page active">
+            <div class="header">
+                <h1>我的快递</h1>
+            </div>
+            <div class="content">
+                <div class="filter-bar">
+                    <button class="filter-btn active" onclick="filterByArea('全部')">全部</button>
+                    <button class="filter-btn" onclick="filterByArea('东区')">东区</button>
+                    <button class="filter-btn" onclick="filterByArea('西区')">西区</button>
+                    <button class="filter-btn" onclick="filterByArea('东西区邮政')">邮政</button>
+                    <button class="filter-btn" onclick="filterByArea('荷花塘')">荷花塘</button>
+                    <button class="filter-btn" onclick="filterByArea('16栋')">16栋</button>
+                    <button class="filter-btn" onclick="filterByArea('17栋')">17栋</button>
+                    <button class="filter-btn" onclick="filterByArea('顺丰')">顺丰</button>
+                </div>
+                <div id="express-list" class="express-list"></div>
+            </div>
+            <button class="fab" onclick="showAreaSelect()">+</button>
+        </div>
+
+        <!-- 已取快递页面 -->
+        <div id="picked-page" class="page">
+            <div class="header">
+                <h1>已取快递</h1>
+            </div>
+            <div class="content">
+                <div id="picked-list" class="express-list"></div>
+            </div>
+        </div>
+
+        <!-- 设置页面 -->
+        <div id="settings-page" class="page">
+            <div class="header">
+                <h1>设置</h1>
+            </div>
+            <div class="content">
+                <div class="settings-item">
+                    <span>清空所有数据</span>
+                    <button onclick="clearAllData()">清空</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 区域选择弹窗 -->
+        <div id="area-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>选择快递区域</h2>
+                    <span class="close" onclick="closeModal('area-modal')">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="area-group">
+                        <button class="area-btn" onclick="selectArea('东区')">东区</button>
+                        <button class="area-btn" onclick="selectArea('西区')">西区</button>
+                        <button class="area-btn" onclick="selectArea('东西区邮政')">东西区邮政</button>
+                        <button class="area-btn" onclick="selectArea('荷花塘')">荷花塘</button>
+                        <button class="area-btn" onclick="selectArea('16栋')">16栋</button>
+                        <button class="area-btn" onclick="selectArea('17栋')">17栋</button>
+                        <button class="area-btn" onclick="selectArea('顺丰')">顺丰</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 添加快递弹窗 -->
+        <div id="add-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>添加快递 - <span id="selected-area"></span></h2>
+                    <span class="close" onclick="closeAddModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="input-display">
+                        <input type="text" id="code-input" readonly placeholder="请输入取件码">
+                    </div>
+                    <div class="custom-keyboard">
+                        <div class="keyboard-container">
+                            <div class="keyboard-left">
+                                <div class="keyboard-row">
+                                    <button class="key-btn" onclick="inputKey('1')">1</button>
+                                    <button class="key-btn" onclick="inputKey('2')">2</button>
+                                    <button class="key-btn" onclick="inputKey('3')">3</button>
+                                </div>
+                                <div class="keyboard-row">
+                                    <button class="key-btn" onclick="inputKey('4')">4</button>
+                                    <button class="key-btn" onclick="inputKey('5')">5</button>
+                                    <button class="key-btn" onclick="inputKey('6')">6</button>
+                                </div>
+                                <div class="keyboard-row">
+                                    <button class="key-btn" onclick="inputKey('7')">7</button>
+                                    <button class="key-btn" onclick="inputKey('8')">8</button>
+                                    <button class="key-btn" onclick="inputKey('9')">9</button>
+                                </div>
+                                <div class="keyboard-row">
+                                    <button class="key-btn key-btn-zero" onclick="inputKey('0')">0</button>
+                                    <button class="key-btn delete-btn" onclick="deleteKey()">⌫</button>
+                                </div>
+                            </div>
+                            <div class="keyboard-right">
+                                <button class="key-btn key-btn-dash" onclick="inputKey('-')">-</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="save-btn" onclick="saveExpress()">保存</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快递详情弹窗 -->
+        <div id="detail-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>快递详情</h2>
+                    <span class="close" onclick="closeModal('detail-modal')">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-info">
+                        <div class="detail-item">
+                            <span class="label">区域：</span>
+                            <span id="detail-area"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">取件码：</span>
+                            <span id="detail-code" class="code-text"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">添加时间：</span>
+                            <span id="detail-time"></span>
+                        </div>
+                    </div>
+                    <button id="mark-picked-btn" class="action-btn" onclick="markAsPicked()">标记为已取</button>
+                    <button class="action-btn delete" onclick="deleteExpress()">删除</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="switchPage('home')">
+                <span class="nav-icon">📦</span>
+                <span class="nav-label">首页</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('picked')">
+                <span class="nav-icon">✓</span>
+                <span class="nav-label">已取</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('settings')">
+                <span class="nav-icon">⚙</span>
+                <span class="nav-label">设置</span>
+            </div>
+        </nav>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
